@@ -1,34 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tdd_demo/counter.dart';
+import 'package:flutter_tdd_demo/main.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:flutter_tdd_demo/main.dart';
-
-/** This tutorial does not follow the "Test Driven Development" approach....
-    We will deal with it later in second branch...*/
 void main() {
 
-  group('Counter', () {
-    test('Value should start at 0', () {
-      final v = Counter().value;
+  //Test for Add and Remove todos
+  testWidgets('Add and remove a todo', (WidgetTester tester) async {
 
-      expect(v, 0);
-    });
+    //Pump or Make a TodoList widget
+    await tester.pumpWidget(TodoList());
 
-    test('Counter value should be incremented', () {
-      final counter = Counter();
+    // Enter 'hi' into the TextField.
+    await tester.enterText(find.byType(TextField), 'hi');
 
-      counter.increment();
+    // Tap the add button.
+    await tester.tap(find.byType(FloatingActionButton));
 
-      expect(counter.value, 1);
-    });
+    // Rebuild the widget with the new item.
+    await tester.pump();
 
-    test('Counter value should be decremented', () {
-      final c = Counter();
+    // Expect to find the item on screen.
+    expect(find.text('hi'), findsOneWidget);
 
-      c.decrement();
+    // Swipe the item to dismiss it.
+    await tester.drag(find.byType(Dismissible), Offset(500.0, 0.0));
 
-      expect(c.value, -1);
-    });
+    // Build the widget until the dismiss animation ends.
+    await tester.pumpAndSettle();
+
+    // Ensure that the item is no longer on screen.
+    expect(find.text('hi'), findsNothing);
   });
 }
